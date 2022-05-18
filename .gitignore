@@ -1,0 +1,37 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# files to ignore
+.env
+serviceAccountKey.json
+cloud_sql_proxy
+
+# unintended files
+server.log
+clean-gin
+__debug_bin
+gin-bin
+
+# dependencies
+/node_modules
+/bower_components
+
+# IDEs and editors
+.vscode
+/.idea
+.project
+.classpath
+*.launch
+.settings/
+
+#System Files
+.DS_Store
+*/.DS_Store
+Thumbs.db
+vendor/*
+!vendor/vendor.json
+
+tmp/*
+gorm.db
+coverage.txt
+
+bak.*
