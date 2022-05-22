@@ -9,9 +9,9 @@ func RouteSetup() *gin.Engine {
 	r := gin.Default()
 	router := r.Group("/api")
 	{
-		router.GET("user", controller.get_all_user())
-		router.POST("user", controller.post_user())
-		router.GET("user/:id", controller.get_user())
+		router.GET("user", controller.GetAllUsers)
+		router.POST("user", controller.CreateUser)
+		router.GET("user/:id", controller.GetUser)
 	}
 	return r
 }
