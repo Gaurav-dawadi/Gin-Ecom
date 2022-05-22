@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func routeSetup() *gin.Engine {
+func RouteSetup() *gin.Engine {
 	r := gin.Default()
 	router := r.Group("/api")
 	{
