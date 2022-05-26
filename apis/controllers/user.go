@@ -1,18 +1,18 @@
-package controller
+package controllers
 
 import (
+	"go-practice/infrastructure"
 	"go-practice/models"
 	"go-practice/response"
-	"go-practice/common"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-)
 
+	"github.com/gin-gonic/gin"
+)
 
 func GetAllUsers(c *gin.Context) {
 	var users []models.User
-	result := common.SetupDatabase()
+	result := infrastructure.SetupDatabase()
 	err := result.Find(&users).Error
 
 	if err != nil {
@@ -23,18 +23,18 @@ func GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func GetUser(c *gin.Context){
+func GetUser(c *gin.Context) {
 	var user models.User
-	user_id, err := strconv.ParseInt(c.Param("id"),10,64)
-	
-	if err != nil{
+	user_id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	if err != nil {
 		res := response.ResponseBadRequest("User id not provided")
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
 
-	// res := common.SetupDatabase().Model(&models.User{}).Where("id = ?", user_id).First(&user).Error
-	res := common.SetupDatabase().First(&user, user_id).Error
+	// res := infrastructure.SetupDatabase().Model(&models.User{}).Where("id = ?", user_id).First(&user).Error
+	res := infrastructure.SetupDatabase().First(&user, user_id).Error
 
 	if res != nil {
 		res := response.ResponseBadRequest("Failed to Get required users")
@@ -45,7 +45,7 @@ func GetUser(c *gin.Context){
 	c.JSON(http.StatusOK, user)
 }
 
-func CreateUser(c *gin.Context){
+func CreateUser(c *gin.Context) {
 	var user models.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -54,7 +54,7 @@ func CreateUser(c *gin.Context){
 		return
 	}
 
-	if err := common.SetupDatabase().Create(&user).Error;err != nil {
+	if err := infrastructure.SetupDatabase().Create(&user).Error; err != nil {
 		res := response.ResponseBadRequest("Failed to Create users")
 		c.JSON(http.StatusBadRequest, res)
 		return
@@ -62,3 +62,8 @@ func CreateUser(c *gin.Context){
 	c.JSON(http.StatusCreated, user)
 }
 
+func GetAllProduct() {
+
+}
+
+func GetProduct() {}

@@ -1,15 +1,16 @@
-package common
+package infrastructure
 
 import (
 	"fmt"
 	"os"
+
 	// "github.com/jinzhu/gorm"
 	// _ "github.com/jinzhu/gorm/dialects/postgres"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func SetupDatabase() *gorm.DB{
+func SetupDatabase() *gorm.DB {
 	db_host := os.Getenv("POSTGRES_HOST")
 	db_port := os.Getenv("POSTGRES_PORT")
 	db_user := os.Getenv("POSTGRES_USER")
@@ -20,6 +21,6 @@ func SetupDatabase() *gorm.DB{
 
 	url := fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v sslmode=%v TimeZone=%v", db_host, db_port, db_user, db_name, db_password, db_sslmode, db_timezone)
 	DB, _ := gorm.Open(postgres.Open(url), &gorm.Config{})
-	
+
 	return DB
 }

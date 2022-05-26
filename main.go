@@ -1,15 +1,22 @@
 package main
+
 import (
+	"fmt"
+	"go-practice/application"
+	"log"
+
 	"github.com/joho/godotenv"
-	"go-practice/common"
-	"go-practice/models"
-	"go-practice/routes"
 )
 
-func main(){
-	godotenv.Load()
-	db,_ := common.SetupDatabase().DB()
-	defer db.Close()
-	common.SetupDatabase().AutoMigrate(&models.User{})	
-	routes.RouteSetup().Run()
+func loadEnv() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Couldnot load environment file")
+	}
+}
+
+func main() {
+	fmt.Println("Before loading env")
+	loadEnv()
+	fmt.Println("After loading env")
+	application.RunApplication()
 }
