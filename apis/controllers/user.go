@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"go-practice/apis/services"
 	"go-practice/infrastructure"
 	"go-practice/models"
 	"go-practice/response"
@@ -11,16 +12,14 @@ import (
 )
 
 func GetAllUsers(c *gin.Context) {
-	var users []models.User
-	result := infrastructure.SetupDatabase()
-	err := result.Find(&users).Error
+	result, err := services.GetAllUsers()
 
 	if err != nil {
 		res := response.ResponseBadRequest("Failed to Find users")
 		c.JSON(http.StatusCreated, res)
 		return
 	}
-	c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, result)
 }
 
 func GetUser(c *gin.Context) {
@@ -54,16 +53,10 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	if err := infrastructure.SetupDatabase().Create(&user).Error; err != nil {
+	if err := services.CreateUser(user); err != nil {
 		res := response.ResponseBadRequest("Failed to Create users")
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
 	c.JSON(http.StatusCreated, user)
 }
-
-func GetAllProduct() {
-
-}
-
-func GetProduct() {}
