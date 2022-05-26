@@ -9,6 +9,8 @@ import (
 	"net/mail"
 	"strconv"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -59,6 +61,15 @@ func CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
+
+	hashedPassword, passwordError := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+
+	if passwordError != nil {
+		res := response.ResponseBadRequest("Password Error")
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	user.Password = string(hashedPassword)
 
 	if err := services.CreateUser(user); err != nil {
 		res := response.ResponseBadRequest("Failed to Create users")
