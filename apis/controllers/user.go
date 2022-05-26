@@ -6,6 +6,7 @@ import (
 	"go-practice/models"
 	"go-practice/response"
 	"net/http"
+	"net/mail"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -49,6 +50,12 @@ func CreateUser(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		res := response.ResponseBadRequest("Error in provided data validation")
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	if _, err := mail.ParseAddress(user.Email); err != nil {
+		res := response.ResponseBadRequest("Email address is invalid")
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
