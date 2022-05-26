@@ -12,6 +12,6 @@ func GetAllComment() ([]models.Comment, error) {
 }
 
 func CreateComment(comment models.Comment) error {
-	err := infrastructure.SetupDatabase().Create(comment).Error
+	err := infrastructure.SetupDatabase().Create(&comment).Error
 	return err
 }

@@ -12,6 +12,6 @@ func GetAllUsers() ([]models.User, error) {
 }
 
 func CreateUser(user models.User) error {
-	err := infrastructure.SetupDatabase().Create(user).Error
+	err := infrastructure.SetupDatabase().Create(&user).Error
 	return err
 }

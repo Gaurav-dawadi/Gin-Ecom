@@ -12,6 +12,6 @@ func GetAllCategory() ([]models.Category, error) {
 }
 
 func CreateCategory(category models.Category) error {
-	err := infrastructure.SetupDatabase().Create(category).Error
+	err := infrastructure.SetupDatabase().Create(&category).Error
 	return err
 }
