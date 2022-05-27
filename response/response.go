@@ -1,33 +1,35 @@
 package response
-import ("net/http")
 
+import (
+	"net/http"
+)
 
-type ResponseMessage struct{
-	message  string  `json:"message"`
-	status   int64 	 `json:"status"`
-	code     string	 `json:"code"`
+type ResponseMessage struct {
+	Message string `json:"message"`
+	Status  int    `json:"status"`
+	Code    string `json:"code"`
 }
 
-func ResponseOK(message string) *ResponseMessage{
+func ResponseOK(message string) *ResponseMessage {
 	return &ResponseMessage{
-		message: message,
-		status: http.StatusOK,
-		code: "OK",
+		Message: message,
+		Status:  http.StatusOK,
+		Code:    "OK",
 	}
 }
 
-func ResponseCreated(message string) *ResponseMessage{
+func ResponseCreated(message string) *ResponseMessage {
 	return &ResponseMessage{
-		message: message,
-		status: http.StatusCreated,
-		code: "created",
+		Message: message,
+		Status:  http.StatusCreated,
+		Code:    "created",
 	}
 }
 
-func ResponseBadRequest(message string) *ResponseMessage{
-	return &ResponseMessage{
-		message: message,
-		status: http.StatusBadRequest,
-		code: "bad_request",
+func ResponseBadRequest(message string) ResponseMessage {
+	return ResponseMessage{
+		Message: message,
+		Status:  http.StatusBadRequest,
+		Code:    "bad_request",
 	}
 }
