@@ -4,6 +4,6 @@ package models
 type Category struct {
 	Base
 	// Parent sql.NullInt64 `json:"parent"`
-	Title    string    `json:"title"`
-	Products []Product `gorm:"foreignKey:CategoryID;references:ID"`
+	Title string `json:"title"`
+	// Products []Product `json:"products" gorm:"foreignKey:CategoryID;references:ID"`
 }
