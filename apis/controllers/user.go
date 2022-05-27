@@ -9,9 +9,8 @@ import (
 	"net/mail"
 	"strconv"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetAllUsers(c *gin.Context) {
@@ -76,5 +75,5 @@ func CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
-	c.JSON(http.StatusCreated, user)
+	c.JSON(http.StatusCreated, "User created Successfully")
 }
