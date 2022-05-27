@@ -11,6 +11,7 @@ import (
 func migrate(database *gorm.DB) {
 	database.AutoMigrate(&models.User{})
 	database.AutoMigrate(&models.Product{})
+	database.AutoMigrate(&models.ProductImage{})
 	database.AutoMigrate(&models.Category{})
 	database.AutoMigrate(&models.Comment{})
 }
