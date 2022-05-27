@@ -10,6 +10,6 @@ func ServiceAllProduct() ([]models.Product, error) {
 }
 
 func CreateProduct(prod models.Product) error {
-	err := repository.CreateProduct(models.Product{})
+	err := repository.CreateProduct(prod)
 	return err
 }
