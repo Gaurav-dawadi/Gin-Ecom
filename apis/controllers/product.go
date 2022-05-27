@@ -33,5 +33,5 @@ func CreateProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
-	c.JSON(http.StatusCreated, product)
+	c.JSON(http.StatusCreated, "Product Created Successfully")
 }
