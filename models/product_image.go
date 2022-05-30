@@ -1,7 +1,8 @@
 package models
 
 type ProductImage struct {
-	Base
-	ProductID uint   `json:"product_id" gorm:"not null"`
-	Image     string `json:"image" gorm:"not null"`
+	// Base
+	ID        uint    `gorm:"primaryKey"`
+	ProductID uint    `form:"product_id" `
+	Image     *[]byte `form:"image" binding:"required"`
 }
