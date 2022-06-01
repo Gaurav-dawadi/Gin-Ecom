@@ -11,7 +11,7 @@ func GetAllProduct() ([]models.Product, error) {
 	return products, err
 }
 
-func CreateProduct(prod models.Product) error {
+func CreateProduct(prod models.Product) (*models.Product, error) {
 	err := infrastructure.SetupDatabase().Create(&prod).Error
-	return err
+	return &prod, err
 }

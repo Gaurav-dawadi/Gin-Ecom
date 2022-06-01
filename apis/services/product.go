@@ -9,9 +9,7 @@ func ServiceAllProduct() ([]models.Product, error) {
 	return repository.GetAllProduct()
 }
 
-func CreateProduct(prod models.Product) error {
-	err := repository.CreateProduct(prod)
-	// Todo: Here take id of product created then create productImage.
-	// Use CreateProductImage() from repository.
-	return err
+func CreateProduct(prod models.Product, filePath string) (*models.Product, error) {
+	prod_re, err := repository.CreateProduct(prod)
+	return prod_re, err
 }
