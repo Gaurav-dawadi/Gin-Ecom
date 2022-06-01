@@ -19,6 +19,7 @@ func RouteSetup() *gin.Engine {
 		router.POST("product", controllers.CreateProduct)
 		router.GET("comment", controllers.GetAllComment)
 		router.POST("comment", controllers.CreateComment)
+		router.GET("product-image", controllers.GetAllProductImage)
 	}
 	return r
 }
