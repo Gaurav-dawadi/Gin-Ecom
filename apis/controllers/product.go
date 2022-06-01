@@ -4,6 +4,7 @@ import (
 	"go-practice/apis/services"
 	"go-practice/models"
 	"go-practice/response"
+	"go-practice/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,8 +22,18 @@ func GetAllProduct(c *gin.Context) {
 }
 
 func CreateProduct(c *gin.Context) {
+	file, uploadFile, err := c.Request.FormFile("Image")
+
+	if err != nil {
+		response.ResponseBadRequest("Failed to get file form request")
+		return
+	}
+
+	filepath := utils.FileSystemStorage(file, uploadFile)
+
 	var product models.Product
-	if err := c.ShouldBindJSON(&product); err != nil {
+
+	if err := c.ShouldBind(&product); err != nil {
 		res := response.ResponseBadRequest("Some field is not correct in product model")
 		c.JSON(http.StatusBadRequest, res)
 		return
