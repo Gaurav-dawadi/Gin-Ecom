@@ -29,11 +29,12 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
+	// Upload file to a local folder and return it's filepath
 	filepath := utils.FileSystemStorage(file, uploadFile)
 
 	var product models.Product
 
-	product_result, err := services.CreateProduct(product, filepath)
+	product_result, err := services.CreateProduct(product)
 
 	if err != nil {
 		res := response.ResponseBadRequest("Couldnot create Product")
