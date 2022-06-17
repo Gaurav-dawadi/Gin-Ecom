@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"go-practice/apis/services"
-	"go-practice/infrastructure"
 	"go-practice/models"
 	"go-practice/response"
 	"net/http"
@@ -25,7 +24,6 @@ func GetAllUsers(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
-	var user models.User
 	user_id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 
 	if err != nil {
@@ -34,8 +32,7 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	// res := infrastructure.SetupDatabase().Model(&models.User{}).Where("id = ?", user_id).First(&user).Error
-	res := infrastructure.SetupDatabase().First(&user, user_id).Error
+	user_obj, res := services.GetUser(user_id)
 
 	if res != nil {
 		res := response.ResponseBadRequest("Failed to Get required users")
@@ -43,7 +40,7 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, user_obj)
 }
 
 func CreateUser(c *gin.Context) {
