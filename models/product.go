@@ -2,9 +2,9 @@ package models
 
 type Product struct {
 	Base
-	UserId      uint   `json:"user_id" gorm:"not null"`
+	UserId      *uint  `json:"user_id" gorm:"not null"`
 	Name        string `json:"name" binding:"required"`
-	CategoryID  uint   `json:"category_id" gorm:"not null"`
+	CategoryID  *uint  `json:"category_id" gorm:"not null"`
 	Description string `json:"description"`
 	Quantity    int    `json:"quantity" binding:"required"`
 	Price       int    `json:"price" binding:"required"`
@@ -13,7 +13,7 @@ type Product struct {
 
 type UpdateProduct struct {
 	Name        string `json:"name"`
-	CategoryID  uint   `json:"category_id"`
+	CategoryID  *uint  `json:"category_id"`
 	Description string `json:"description"`
 	Quantity    int    `json:"quantity"`
 	Price       int    `json:"price"`

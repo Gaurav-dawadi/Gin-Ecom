@@ -97,7 +97,7 @@ func UpdateProduct(c *gin.Context) {
 	if product_obj.Name == "" {
 		product_obj.Name = product.Name
 	}
-	if product_obj.CategoryID <= 0 {
+	if *product_obj.CategoryID <= 0 {
 		product_obj.CategoryID = product.CategoryID
 	}
 	if product_obj.Description == "" {
