@@ -15,8 +15,6 @@ import (
 func JwtAuthValidation() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader(utils.AUTHORIZATION)
-		token := strings.Split(header, " ")[1]
-
 		if header == "" {
 			fmt.Println(utils.AUTHORIZATION)
 			c.JSON(http.StatusUnauthorized, utils.UNAUTHORIZED)
@@ -24,6 +22,7 @@ func JwtAuthValidation() gin.HandlerFunc {
 			return
 		}
 
+		token := strings.Split(header, " ")[1]
 		parsed_token, err := JWTParseWithClaims(token)
 
 		expiration_time := parsed_token.Claims.(*utils.TokenClaims).ExpiresAt.Time
