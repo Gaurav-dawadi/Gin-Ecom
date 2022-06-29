@@ -10,3 +10,11 @@ type Product struct {
 	Price       int    `json:"price" binding:"required"`
 	// Comments    []Comment `json:"comments" gorm:"foreignKey:ProductID;references:ID"`
 }
+
+type UpdateProduct struct {
+	Name        string `json:"name"`
+	CategoryID  uint   `json:"category_id"`
+	Description string `json:"description"`
+	Quantity    int    `json:"quantity"`
+	Price       int    `json:"price"`
+}

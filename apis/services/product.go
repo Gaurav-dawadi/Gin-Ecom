@@ -18,6 +18,10 @@ func CreateProduct(prod models.Product) (*models.Product, error) {
 	return prod_re, err
 }
 
-func UpdateProduct(prod_id string, prod map[string]interface{}) (*models.Product, error) {
+func UpdateProduct(prod_id string, prod models.UpdateProduct) error {
 	return repository.UpdateProduct(prod_id, prod)
+}
+
+func DeleteProduct(prod_id uint) error {
+	return repository.DeleteProduct(prod_id)
 }

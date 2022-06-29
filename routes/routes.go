@@ -24,6 +24,7 @@ func RouteSetup() *gin.Engine {
 		router.GET("product", middlewares.JwtAuthValidation(), controllers.GetProduct)
 		router.POST("product", middlewares.JwtAuthValidation(), controllers.CreateProduct)
 		router.PATCH("product/:id", middlewares.JwtAuthValidation(), controllers.UpdateProduct)
+		router.DELETE("product/:id", middlewares.JwtAuthValidation(), controllers.DeleteProduct)
 		router.GET("comments", middlewares.JwtAuthValidation(), controllers.GetAllComment)
 		router.POST("comment", middlewares.JwtAuthValidation(), controllers.CreateComment)
 		router.GET("product-image", middlewares.JwtAuthValidation(), controllers.GetAllProductImage)
