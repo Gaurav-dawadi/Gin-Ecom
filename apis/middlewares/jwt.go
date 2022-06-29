@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"fmt"
+	"go-practice/response"
 	"go-practice/utils"
 	"net/http"
 	"strings"
@@ -23,13 +24,7 @@ func JwtAuthValidation() gin.HandlerFunc {
 			return
 		}
 
-		parsed_token, err := jwt.ParseWithClaims(
-			token,
-			&utils.TokenClaims{},
-			func(token *jwt.Token) (interface{}, error) {
-				return utils.SignKey, nil
-			},
-		)
+		parsed_token, err := JWTParseWithClaims(token)
 
 		expiration_time := parsed_token.Claims.(*utils.TokenClaims).ExpiresAt.Time
 		if expiration_time.Sub(time.Now().Local()) < 0 {
@@ -40,26 +35,15 @@ func JwtAuthValidation() gin.HandlerFunc {
 		}
 
 		if err != nil {
-			if err == jwt.ErrSignatureInvalid {
-				fmt.Println(utils.UNAUTHORIZED)
-				c.JSON(http.StatusUnauthorized, utils.UNAUTHORIZED)
-				c.Abort()
-				return
-			}
-			if err == jwt.ErrTokenExpired {
-				fmt.Println(utils.TOKEN_EXPIRED)
-				c.JSON(http.StatusUnauthorized, utils.TOKEN_EXPIRED)
-				c.Abort()
-				return
-			}
-			fmt.Println(utils.BAD_REQUEST)
+			res := response.JWTErrorResponse(err)
+			c.JSON(res.Status, res.Code)
 			c.Abort()
 			return
 		}
 
 		if !parsed_token.Valid {
-			fmt.Println(utils.UNAUTHORIZED)
-			c.JSON(http.StatusUnauthorized, utils.UNAUTHORIZED)
+			fmt.Println(utils.BAD_REQUEST)
+			c.JSON(http.StatusBadRequest, utils.BAD_REQUEST)
 			c.Abort()
 			return
 		}
@@ -68,4 +52,12 @@ func JwtAuthValidation() gin.HandlerFunc {
 	}
 }
 
-func JWTAuthRefreshToken() {}
+func JWTParseWithClaims(token string) (*jwt.Token, error) {
+	return jwt.ParseWithClaims(
+		token,
+		&utils.TokenClaims{},
+		func(token *jwt.Token) (interface{}, error) {
+			return utils.SignKey, nil
+		},
+	)
+}

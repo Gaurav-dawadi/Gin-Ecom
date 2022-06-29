@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 )
 
 var SignKey = []byte(SECRET_KEY)
@@ -21,11 +22,14 @@ type TokenClaims struct {
 	Username  string `json:"username"`
 }
 
-func create_access_token(user models.User) string {
+func CreateAccessToken(user models.User) string {
 	token := jwt.New(jwt.SigningMethodHS256)
+	id, _ := uuid.NewRandom()
 	token.Claims = &TokenClaims{
 		&jwt.RegisteredClaims{
+			ID:        id.String(),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ACCESS_TOKEN_EXPIRY_TIME)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 		"access",
 		int(user.ID),
@@ -37,9 +41,12 @@ func create_access_token(user models.User) string {
 
 func create_refresh_token(user models.User) string {
 	token := jwt.New(jwt.SigningMethodHS256)
+	id, _ := uuid.NewRandom()
 	token.Claims = &TokenClaims{
 		&jwt.RegisteredClaims{
+			ID:        id.String(),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(REFRESH_TOKEN_EXPIRY_TIME)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 		"refresh",
 		int(user.ID),
@@ -50,7 +57,7 @@ func create_refresh_token(user models.User) string {
 }
 
 func JwtAuthToken(user models.User) TokenManager {
-	access_token := create_access_token(user)
+	access_token := CreateAccessToken(user)
 	refresh_token := create_refresh_token(user)
 
 	var token_manager TokenManager
