@@ -54,8 +54,15 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	product_result, err := services.CreateProduct(product)
+	user_id := c.MustGet(utils.USER_ID)
+	int_user_id, ok := utils.TypeAssertInt(user_id)
+	if !ok {
+		fmt.Println("Error during type assertion")
+		return
+	}
 
+	*product.UserId = uint(int_user_id)
+	product_result, err := services.CreateProduct(product)
 	if err != nil {
 		res := response.ResponseBadRequest("Couldnot create Product")
 		c.JSON(http.StatusBadRequest, res)
@@ -81,8 +88,22 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 	if product.ID == 0 {
-		fmt.Println("Couldnot find product")
+		fmt.Println("Error Couldnot find product")
 		c.JSON(http.StatusNotFound, "Couldnot find product")
+		return
+	}
+
+	user_id := c.MustGet(utils.USER_ID)
+	typed_user_id, ok := utils.TypeAssertInt(user_id)
+	if !ok {
+		fmt.Println("Error during typed assertion")
+		c.JSON(http.StatusInternalServerError, "Error during typed assertion")
+		return
+	}
+
+	if !utils.IsSameUser(int(*product.UserId), typed_user_id) {
+		fmt.Println("Error Unauthorized user trying to update product. User and owner of product doesnot match")
+		c.JSON(http.StatusBadRequest, "Cannot make this request")
 		return
 	}
 
@@ -97,7 +118,7 @@ func UpdateProduct(c *gin.Context) {
 	if product_obj.Name == "" {
 		product_obj.Name = product.Name
 	}
-	if *product_obj.CategoryID <= 0 {
+	if product_obj.CategoryID == nil || *product_obj.CategoryID <= 0 {
 		product_obj.CategoryID = product.CategoryID
 	}
 	if product_obj.Description == "" {
@@ -125,6 +146,20 @@ func DeleteProduct(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Error when fetching product")
 		c.JSON(http.StatusBadGateway, "Error when fetching product")
+		return
+	}
+
+	user_id := c.MustGet(utils.USER_ID)
+	typed_user_id, ok := utils.TypeAssertInt(user_id)
+	if !ok {
+		fmt.Println("Error during typed assertion")
+		c.JSON(http.StatusInternalServerError, "Error during typed assertion")
+		return
+	}
+
+	if !utils.IsSameUser(int(*product.UserId), typed_user_id) {
+		fmt.Println("Error Unauthorized user trying to delete product. User and owner of product doesnot match")
+		c.JSON(http.StatusBadRequest, "Cannot make this request")
 		return
 	}
 

@@ -47,6 +47,8 @@ func JwtAuthValidation() gin.HandlerFunc {
 			return
 		}
 
+		c.Set(utils.USER_ID, parsed_token.Claims.(*utils.TokenClaims).UserID)
+		c.Set(utils.USER_NAME, parsed_token.Claims.(*utils.TokenClaims).Username)
 		c.Next()
 	}
 }
