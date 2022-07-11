@@ -5,10 +5,20 @@ import (
 	"go-practice/models"
 )
 
-func GetAllComment() ([]models.Comment, error) {
-	return repository.GetAllComment()
+type CommentService struct {
+	commentRepository repository.CommentRepository
 }
 
-func CreateComment(comment models.Comment) error {
-	return repository.CreateComment(comment)
+func NewCommentService(commentRepository repository.CommentRepository) *CommentService {
+	return &CommentService{
+		commentRepository: commentRepository,
+	}
+}
+
+func (cs CommentService) GetAllComment() ([]models.Comment, error) {
+	return cs.commentRepository.GetAllComment()
+}
+
+func (cs CommentService) CreateComment(comment models.Comment) error {
+	return cs.commentRepository.CreateComment(comment)
 }

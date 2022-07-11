@@ -5,13 +5,23 @@ import (
 	"go-practice/models"
 )
 
-func GetAllComment() ([]models.Comment, error) {
+type CommentRepository struct {
+	database infrastructure.DatabaseSetup
+}
+
+func NewCommentRepository(database infrastructure.DatabaseSetup) *CommentRepository {
+	return &CommentRepository{
+		database: database,
+	}
+}
+
+func (cr CommentRepository) GetAllComment() ([]models.Comment, error) {
 	var comments []models.Comment
-	err := infrastructure.SetupDatabase().Find(&comments).Error
+	err := cr.database.SetupDatabase().Find(&comments).Error
 	return comments, err
 }
 
-func CreateComment(comment models.Comment) error {
-	err := infrastructure.SetupDatabase().Create(&comment).Error
+func (cr CommentRepository) CreateComment(comment models.Comment) error {
+	err := cr.database.SetupDatabase().Create(&comment).Error
 	return err
 }
