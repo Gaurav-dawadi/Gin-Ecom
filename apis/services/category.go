@@ -5,11 +5,21 @@ import (
 	"go-practice/models"
 )
 
-func GetAllCategory() ([]models.Category, error) {
-	return repository.GetAllCategory()
+type CategoryService struct {
+	categoryRepository repository.CategoryRepository
 }
 
-func CreateCategory(category models.Category) error {
-	err := repository.CreateCategory(category)
+func NewCategoryService(categoryRepository repository.CategoryRepository) *CategoryService {
+	return &CategoryService{
+		categoryRepository: categoryRepository,
+	}
+}
+
+func (cs CategoryService) GetAllCategory() ([]models.Category, error) {
+	return cs.categoryRepository.GetAllCategory()
+}
+
+func (cs CategoryService) CreateCategory(category models.Category) error {
+	err := cs.categoryRepository.CreateCategory(category)
 	return err
 }

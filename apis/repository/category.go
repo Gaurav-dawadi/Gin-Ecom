@@ -5,13 +5,23 @@ import (
 	"go-practice/models"
 )
 
-func GetAllCategory() ([]models.Category, error) {
+type CategoryRepository struct {
+	database infrastructure.DatabaseSetup
+}
+
+func NewCategoryRepository(database infrastructure.DatabaseSetup) *CategoryRepository {
+	return &CategoryRepository{
+		database: database,
+	}
+}
+
+func (cr CategoryRepository) GetAllCategory() ([]models.Category, error) {
 	var categories []models.Category
-	err := infrastructure.SetupDatabase().Find(&categories).Error
+	err := cr.database.SetupDatabase().Find(&categories).Error
 	return categories, err
 }
 
-func CreateCategory(category models.Category) error {
-	err := infrastructure.SetupDatabase().Create(&category).Error
+func (cr CategoryRepository) CreateCategory(category models.Category) error {
+	err := cr.database.SetupDatabase().Create(&category).Error
 	return err
 }
