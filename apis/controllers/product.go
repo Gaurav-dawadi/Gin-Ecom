@@ -12,10 +12,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetProduct(c *gin.Context) {
+type ProductController struct {
+	productService      services.ProductService
+	productImageService services.ProductImageService
+}
+
+func NewProductController(
+	productService services.ProductService,
+	productImageService services.ProductImageService,
+) *ProductController {
+	return &ProductController{
+		productService:      productService,
+		productImageService: productImageService,
+	}
+}
+
+func (pc ProductController) GetProduct(c *gin.Context) {
 	product_id := c.Param("id")
 
-	product, err := services.GetProduct(product_id)
+	product, err := pc.productService.GetProduct(product_id)
 	if err != nil {
 		logger.LogOutput("Error when fetching product")
 		c.JSON(http.StatusBadGateway, "Error when fetching product")
@@ -25,8 +40,8 @@ func GetProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, product)
 }
 
-func GetAllProduct(c *gin.Context) {
-	result, err := services.GetAllProduct()
+func (pc ProductController) GetAllProduct(c *gin.Context) {
+	result, err := pc.productService.GetAllProduct()
 
 	if err != nil {
 		res := response.ResponseBadRequest("Failed to Find products")
@@ -37,7 +52,7 @@ func GetAllProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func CreateProduct(c *gin.Context) {
+func (pc ProductController) CreateProduct(c *gin.Context) {
 	file, uploadFile, err := c.Request.FormFile("Image")
 
 	if err != nil {
@@ -66,7 +81,7 @@ func CreateProduct(c *gin.Context) {
 	}
 
 	*product.UserId = uint(int_user_id)
-	product_result, err := services.CreateProduct(product)
+	product_result, err := pc.productService.CreateProduct(product)
 	if err != nil {
 		res := response.ResponseBadRequest("Couldnot create Product")
 		logger.FailOnError(err, "Couldnot create Product")
@@ -74,7 +89,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	if err := services.CreateProductImage(product_result.ID, filepath); err != nil {
+	if err := pc.productImageService.CreateProductImage(product_result.ID, filepath); err != nil {
 		res := response.ResponseBadRequest("Couldnot create ProductImage")
 		logger.FailOnError(err, "Couldnot create ProductImage")
 		c.JSON(http.StatusBadRequest, res)
@@ -84,10 +99,10 @@ func CreateProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"data": product_result})
 }
 
-func UpdateProduct(c *gin.Context) {
+func (pc ProductController) UpdateProduct(c *gin.Context) {
 	product_id := c.Param("id")
 
-	product, err := services.GetProduct(product_id)
+	product, err := pc.productService.GetProduct(product_id)
 	if err != nil {
 		fmt.Println("Error when fetching product")
 		c.JSON(http.StatusBadGateway, "Error when fetching product")
@@ -137,7 +152,7 @@ func UpdateProduct(c *gin.Context) {
 		product_obj.Price = product.Price
 	}
 
-	if err := services.UpdateProduct(product_id, product_obj); err != nil {
+	if err := pc.productService.UpdateProduct(product_id, product_obj); err != nil {
 		logger.FailOnError(err, "Error updating product")
 		c.JSON(http.StatusInternalServerError, "Error updating product")
 	}
@@ -145,10 +160,10 @@ func UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, "Product Updated Successfully")
 }
 
-func DeleteProduct(c *gin.Context) {
+func (pc ProductController) DeleteProduct(c *gin.Context) {
 	product_id := c.Param("id")
 
-	product, err := services.GetProduct(product_id)
+	product, err := pc.productService.GetProduct(product_id)
 	if err != nil {
 		logger.LogOutput("Error when fetching product")
 		c.JSON(http.StatusBadGateway, "Error when fetching product")
@@ -169,7 +184,7 @@ func DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	if err := services.DeleteProduct(product.ID); err != nil {
+	if err := pc.productService.DeleteProduct(product.ID); err != nil {
 		logger.LogOutput("Error deleting product")
 		c.JSON(http.StatusInternalServerError, "Error deleting product")
 	}
