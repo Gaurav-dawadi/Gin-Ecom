@@ -8,8 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetAllProductImage(c *gin.Context) {
-	result, err := repository.GetAllProductImage()
+type ProductImageController struct {
+	productImageRepository repository.ProductImageRepository
+}
+
+func NewProductImageController(productImageRepository repository.ProductImageRepository) ProductImageController {
+	return ProductImageController{
+		productImageRepository: productImageRepository,
+	}
+}
+
+func (pic ProductImageController) GetAllProductImage(c *gin.Context) {
+	result, err := pic.productImageRepository.GetAllProductImage()
 
 	if err != nil {
 		res := response.ResponseBadRequest("Failed to Find products")
