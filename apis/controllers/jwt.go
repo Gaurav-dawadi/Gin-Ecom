@@ -32,7 +32,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	user_obj, err := services.GetUserFromEmail(user_info.Email)
+	user_obj, err := services.UserService.GetUserFromEmail(services.UserService{}, user_info.Email)
 	if err != nil {
 		// s := fmt.Errorf("error while fetching user from given email: %s", err)  /// Doesnot work
 		// s := fmt.Sprintf("error while fetching user from given email: %s", err) /// Works
@@ -143,7 +143,7 @@ func RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	user_obj, err := services.GetUser(user_id)
+	user_obj, err := services.UserService.GetUser(services.UserService{}, user_id)
 	if err != nil {
 		logger.FailOnError(err, "User not found")
 		ctx.JSON(http.StatusBadRequest, "User not found")

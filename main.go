@@ -18,5 +18,5 @@ func main() {
 	fmt.Println("Before loading env")
 	loadEnv()
 	fmt.Println("After loading env")
-	application.RunApplication()
+	application.ApplicationInitialize.RunApplication(application.ApplicationInitialize{})
 }
