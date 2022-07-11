@@ -10,7 +10,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func SetupDatabase() *gorm.DB {
+type DatabaseSetup struct{}
+
+func NewDatabaseSetup() *DatabaseSetup {
+	return &DatabaseSetup{}
+}
+
+func (ds DatabaseSetup) SetupDatabase() *gorm.DB {
 	db_host := os.Getenv("POSTGRES_HOST")
 	db_port := os.Getenv("POSTGRES_PORT")
 	db_user := os.Getenv("POSTGRES_USER")

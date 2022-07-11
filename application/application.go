@@ -8,6 +8,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type ApplicationInitialize struct {
+	database infrastructure.DatabaseSetup
+}
+
+func NewApplicationInitialize(database infrastructure.DatabaseSetup) *ApplicationInitialize {
+	return &ApplicationInitialize{
+		database: database,
+	}
+}
+
 func migrate(database *gorm.DB) {
 	database.AutoMigrate(&models.User{})
 	database.AutoMigrate(&models.Product{})
@@ -16,9 +26,9 @@ func migrate(database *gorm.DB) {
 	database.AutoMigrate(&models.Comment{})
 }
 
-func RunApplication() {
-	db, _ := infrastructure.SetupDatabase().DB()
+func (ra ApplicationInitialize) RunApplication() {
+	db, _ := ra.database.SetupDatabase().DB()
 	defer db.Close()
-	migrate(infrastructure.SetupDatabase())
+	migrate(ra.database.SetupDatabase())
 	routes.RouteSetup().Run()
 }
