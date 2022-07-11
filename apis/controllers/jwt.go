@@ -6,6 +6,7 @@ import (
 	"go-practice/apis/services"
 	"go-practice/response"
 	"go-practice/utils"
+	"go-practice/utils/logger"
 	"net/http"
 	"strconv"
 	"time"
@@ -36,10 +37,12 @@ func Login(ctx *gin.Context) {
 		// s := fmt.Errorf("error while fetching user from given email: %s", err)  /// Doesnot work
 		// s := fmt.Sprintf("error while fetching user from given email: %s", err) /// Works
 		ctx.JSON(http.StatusBadRequest, "error while fetching user from given email")
+		logger.FailOnError(err, "error while fetching user from given email")
 		return
 	}
 	if user_obj.ID == 0 {
 		ctx.JSON(http.StatusBadRequest, "incorrect email address")
+		logger.LogOutput("incorrect email address")
 		return
 	}
 
@@ -116,7 +119,7 @@ func RefreshToken(ctx *gin.Context) {
 		return
 	}
 	if !parsed_token.Valid {
-		fmt.Println(utils.BAD_REQUEST)
+		logger.LogOutput(utils.BAD_REQUEST)
 		ctx.JSON(http.StatusBadRequest, utils.BAD_REQUEST)
 		return
 	}
@@ -124,7 +127,7 @@ func RefreshToken(ctx *gin.Context) {
 	// Check expiry_date of token.RefreshToken
 	expiration_time := parsed_token.Claims.(*utils.TokenClaims).ExpiresAt.Time
 	if expiration_time.Sub(time.Now().Local()) < 0 {
-		fmt.Println(utils.TOKEN_EXPIRED)
+		logger.LogOutput(utils.TOKEN_EXPIRED)
 		ctx.JSON(http.StatusUnauthorized, utils.TOKEN_EXPIRED)
 		return
 	}
@@ -135,14 +138,14 @@ func RefreshToken(ctx *gin.Context) {
 	string_user_id := fmt.Sprintf("%d", decode_user_id)
 	user_id, err := strconv.ParseInt(string_user_id, 10, 64)
 	if err != nil {
-		fmt.Println("Error while parsing user id to 64bit")
+		logger.LogOutput("Error while parsing user id to 64bit")
 		ctx.JSON(http.StatusInternalServerError, "Error while parsing user id to 64bit")
 		return
 	}
 
 	user_obj, err := services.GetUser(user_id)
 	if err != nil {
-		fmt.Println("User not found")
+		logger.FailOnError(err, "User not found")
 		ctx.JSON(http.StatusBadRequest, "User not found")
 		return
 	}

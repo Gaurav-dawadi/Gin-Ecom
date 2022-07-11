@@ -6,6 +6,7 @@ import (
 	"go-practice/models"
 	"go-practice/response"
 	"go-practice/utils"
+	"go-practice/utils/logger"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +17,7 @@ func GetProduct(c *gin.Context) {
 
 	product, err := services.GetProduct(product_id)
 	if err != nil {
-		fmt.Println("Error when fetching product")
+		logger.LogOutput("Error when fetching product")
 		c.JSON(http.StatusBadGateway, "Error when fetching product")
 		return
 	}
@@ -29,6 +30,7 @@ func GetAllProduct(c *gin.Context) {
 
 	if err != nil {
 		res := response.ResponseBadRequest("Failed to Find products")
+		logger.FailOnError(err, "Failed to Find products")
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
@@ -39,6 +41,7 @@ func CreateProduct(c *gin.Context) {
 	file, uploadFile, err := c.Request.FormFile("Image")
 
 	if err != nil {
+		logger.LogOutput("Failed to get file from request")
 		response.ResponseBadRequest("Failed to get file from request")
 		return
 	}
@@ -50,6 +53,7 @@ func CreateProduct(c *gin.Context) {
 
 	if err := c.ShouldBind(&product); err != nil {
 		res := response.ResponseBadRequest("Couldnot bind Product")
+		logger.LogOutput("Couldnot bind Product")
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
@@ -57,7 +61,7 @@ func CreateProduct(c *gin.Context) {
 	user_id := c.MustGet(utils.USER_ID)
 	int_user_id, ok := utils.TypeAssertInt(user_id)
 	if !ok {
-		fmt.Println("Error during type assertion")
+		logger.LogOutput("Error during type assertion")
 		return
 	}
 
@@ -65,12 +69,14 @@ func CreateProduct(c *gin.Context) {
 	product_result, err := services.CreateProduct(product)
 	if err != nil {
 		res := response.ResponseBadRequest("Couldnot create Product")
+		logger.FailOnError(err, "Couldnot create Product")
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
 
 	if err := services.CreateProductImage(product_result.ID, filepath); err != nil {
 		res := response.ResponseBadRequest("Couldnot create ProductImage")
+		logger.FailOnError(err, "Couldnot create ProductImage")
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
@@ -96,13 +102,13 @@ func UpdateProduct(c *gin.Context) {
 	user_id := c.MustGet(utils.USER_ID)
 	typed_user_id, ok := utils.TypeAssertInt(user_id)
 	if !ok {
-		fmt.Println("Error during typed assertion")
+		logger.LogOutput("Error during typed assertion")
 		c.JSON(http.StatusInternalServerError, "Error during typed assertion")
 		return
 	}
 
 	if !utils.IsSameUser(int(*product.UserId), typed_user_id) {
-		fmt.Println("Error Unauthorized user trying to update product. User and owner of product doesnot match")
+		logger.LogOutput("Error Unauthorized user trying to update product. User and owner of product doesnot match")
 		c.JSON(http.StatusBadRequest, "Cannot make this request")
 		return
 	}
@@ -110,7 +116,7 @@ func UpdateProduct(c *gin.Context) {
 	var product_obj models.UpdateProduct
 
 	if err := c.ShouldBindJSON(&product_obj); err != nil {
-		fmt.Println("Error binding product")
+		logger.FailOnError(err, "Error binding product")
 		c.JSON(http.StatusBadGateway, "Error binding product")
 		return
 	}
@@ -132,7 +138,7 @@ func UpdateProduct(c *gin.Context) {
 	}
 
 	if err := services.UpdateProduct(product_id, product_obj); err != nil {
-		fmt.Println("Error updating product")
+		logger.FailOnError(err, "Error updating product")
 		c.JSON(http.StatusInternalServerError, "Error updating product")
 	}
 
@@ -144,7 +150,7 @@ func DeleteProduct(c *gin.Context) {
 
 	product, err := services.GetProduct(product_id)
 	if err != nil {
-		fmt.Println("Error when fetching product")
+		logger.LogOutput("Error when fetching product")
 		c.JSON(http.StatusBadGateway, "Error when fetching product")
 		return
 	}
@@ -152,19 +158,19 @@ func DeleteProduct(c *gin.Context) {
 	user_id := c.MustGet(utils.USER_ID)
 	typed_user_id, ok := utils.TypeAssertInt(user_id)
 	if !ok {
-		fmt.Println("Error during typed assertion")
+		logger.LogOutput("Error during typed assertion")
 		c.JSON(http.StatusInternalServerError, "Error during typed assertion")
 		return
 	}
 
 	if !utils.IsSameUser(int(*product.UserId), typed_user_id) {
-		fmt.Println("Error Unauthorized user trying to delete product. User and owner of product doesnot match")
+		logger.LogOutput("Error Unauthorized user trying to delete product.User and owner of product doesnot match")
 		c.JSON(http.StatusBadRequest, "Cannot make this request")
 		return
 	}
 
 	if err := services.DeleteProduct(product.ID); err != nil {
-		fmt.Println("Error deleting product")
+		logger.LogOutput("Error deleting product")
 		c.JSON(http.StatusInternalServerError, "Error deleting product")
 	}
 

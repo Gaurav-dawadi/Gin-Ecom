@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"go-practice/utils/logger"
 	"io"
 	"mime/multipart"
 	"os"
@@ -22,7 +22,7 @@ func FileSystemStorage(file multipart.File, uploadFile *multipart.FileHeader) st
 	dirInfo, err := os.Stat("media")
 	if os.IsNotExist(err) {
 		if err := os.Mkdir(dirInfo.Name(), 0777); err != nil {
-			fmt.Println("Error occured during creation of directory: ", err)
+			logger.LogError(err, "Error occured during creation of director")
 		}
 	}
 
@@ -31,12 +31,12 @@ func FileSystemStorage(file multipart.File, uploadFile *multipart.FileHeader) st
 
 	out, err := os.Create(filepath.Join(dirInfo.Name(), new_filename))
 	if err != nil {
-		fmt.Println(err)
+		logger.LogError(err, "error occured during creation of file")
 	}
 	defer out.Close()
 	_, err = io.Copy(out, file)
 	if err != nil {
-		fmt.Println(err)
+		logger.LogError(err, "error during copying of file")
 	}
 
 	filepath := dirInfo.Name() + new_filename

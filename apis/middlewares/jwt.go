@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-practice/response"
 	"go-practice/utils"
+	"go-practice/utils/logger"
 	"net/http"
 	"strings"
 	"time"
@@ -27,7 +28,7 @@ func JwtAuthValidation() gin.HandlerFunc {
 
 		expiration_time := parsed_token.Claims.(*utils.TokenClaims).ExpiresAt.Time
 		if expiration_time.Sub(time.Now().Local()) < 0 {
-			fmt.Println(utils.TOKEN_EXPIRED)
+			logger.LogOutput(utils.TOKEN_EXPIRED)
 			c.JSON(http.StatusUnauthorized, utils.TOKEN_EXPIRED)
 			c.Abort()
 			return
@@ -41,7 +42,7 @@ func JwtAuthValidation() gin.HandlerFunc {
 		}
 
 		if !parsed_token.Valid {
-			fmt.Println(utils.BAD_REQUEST)
+			logger.LogOutput(utils.BAD_REQUEST)
 			c.JSON(http.StatusBadRequest, utils.BAD_REQUEST)
 			c.Abort()
 			return
