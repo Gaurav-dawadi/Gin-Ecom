@@ -5,18 +5,28 @@ import (
 	"go-practice/models"
 )
 
-func GetAllUsers() ([]models.User, error) {
-	return repository.GetAllUsers()
+type UserService struct {
+	userRepository repository.UserRepository
 }
 
-func CreateUser(user models.User) error {
-	return repository.CreateUser(user)
+func NewUserService(userRepository repository.UserRepository) *UserService {
+	return &UserService{
+		userRepository: userRepository,
+	}
 }
 
-func GetUser(user_id int64) (*models.User, error) {
-	return repository.GetUser(user_id)
+func (us UserService) GetAllUsers() ([]models.User, error) {
+	return us.userRepository.GetAllUsers()
 }
 
-func GetUserFromEmail(user_email string) (*models.User, error) {
-	return repository.GetUserFromEmail(user_email)
+func (us UserService) CreateUser(user models.User) error {
+	return us.userRepository.CreateUser(user)
+}
+
+func (us UserService) GetUser(user_id int64) (*models.User, error) {
+	return us.userRepository.GetUser(user_id)
+}
+
+func (us UserService) GetUserFromEmail(user_email string) (*models.User, error) {
+	return us.userRepository.GetUserFromEmail(user_email)
 }

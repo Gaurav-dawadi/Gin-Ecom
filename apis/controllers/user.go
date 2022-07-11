@@ -13,8 +13,18 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func GetAllUsers(c *gin.Context) {
-	result, err := services.GetAllUsers()
+type UserController struct {
+	userService services.UserService
+}
+
+func NewUserController(userService services.UserService) *UserController {
+	return &UserController{
+		userService: userService,
+	}
+}
+
+func (uc UserController) GetAllUsers(c *gin.Context) {
+	result, err := uc.userService.GetAllUsers()
 
 	if err != nil {
 		logger.FailOnError(err, "failed to find users")
@@ -25,7 +35,7 @@ func GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func GetUser(c *gin.Context) {
+func (uc UserController) GetUser(c *gin.Context) {
 	user_id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 
 	if err != nil {
@@ -35,7 +45,7 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	user_obj, res := services.GetUser(user_id)
+	user_obj, res := uc.userService.GetUser(user_id)
 
 	if res != nil {
 		logger.FailOnError(res, "Failed to Get required users")
@@ -47,7 +57,7 @@ func GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user_obj)
 }
 
-func CreateUser(c *gin.Context) {
+func (uc UserController) CreateUser(c *gin.Context) {
 	var user models.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -74,7 +84,7 @@ func CreateUser(c *gin.Context) {
 	}
 	user.Password = string(hashedPassword)
 
-	if err := services.CreateUser(user); err != nil {
+	if err := uc.userService.CreateUser(user); err != nil {
 		logger.FailOnError(err, "failed to create user")
 		res := response.ResponseBadRequest("Failed to Create users")
 		c.JSON(http.StatusBadRequest, res)
