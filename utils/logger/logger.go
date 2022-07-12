@@ -8,20 +8,24 @@ import (
 
 func FailOnError(err error, msg string) {
 	if err != nil {
-		log.Fatalf("Fatal\n%s: %s", aurora.Red(msg), aurora.Red(err))
+		log.Fatalf("Fatal\n%s: %s", aurora.BrightRed(msg), aurora.BrightRed(err))
 	}
 }
 
 func LogError(err error, msg string) {
-	log.Printf("%s: %s", aurora.Red(msg), aurora.Red(err))
+	log.Printf("%s: %s", aurora.BrightRed(msg), aurora.BrightRed(err))
+}
+
+func LogFatal(msg string) {
+	log.Fatal(aurora.BrightRed(msg))
 }
 
 func LogOutput(msg string) {
-	log.Println(aurora.Cyan(msg))
+	log.Println(aurora.BrightCyan(msg))
 }
 
 func LogInfo(msg string) {
-	log.Println(aurora.Blue(msg))
+	log.Println(aurora.BrightBlue(msg))
 }
 
 // Log logs msg with default color.
