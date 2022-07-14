@@ -9,29 +9,17 @@ import (
 )
 
 type ApplicationInitialize struct {
-	database      infrastructure.DatabaseSetup
-	routes        routes.RouteInitializer
-	categoryRoute routes.CategoryRoutes
-	commentRoute  routes.CommentRoutes
-	userRoute     routes.UserRoutes
-	productRoute  routes.ProductRoutes
+	database infrastructure.DatabaseSetup
+	routes   routes.RouteInitializer
 }
 
 func NewApplicationInitialize(
 	database infrastructure.DatabaseSetup,
-	categoryRoute routes.CategoryRoutes,
-	commentRoute routes.CommentRoutes,
-	productRoute routes.ProductRoutes,
-	userRoute routes.UserRoutes,
 	routes routes.RouteInitializer,
 ) *ApplicationInitialize {
 	return &ApplicationInitialize{
-		database:      database,
-		categoryRoute: categoryRoute,
-		commentRoute:  commentRoute,
-		productRoute:  productRoute,
-		userRoute:     userRoute,
-		routes:        routes,
+		database: database,
+		routes:   routes,
 	}
 }
 
