@@ -2,8 +2,10 @@
 
 # files to ignore
 .env
+media/
 serviceAccountKey.json
 cloud_sql_proxy
+info.json
 
 # unintended files
 server.log
@@ -33,5 +35,5 @@ vendor/*
 tmp/*
 gorm.db
 coverage.txt
-
+*.txt
 bak.*
